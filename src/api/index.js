@@ -1,5 +1,6 @@
 require("./config/env");
 const startServer = require("./server");
+const { testConnection } = require("./database");
 const { logError, logInfo } = require("./logger");
 const { NODE_EXIT_SIGNAL } = require("./config/const");
 
@@ -39,7 +40,8 @@ function listenForUncaughtException() {
  */
 async function init() {
   try {
-
+    logInfo("Initializing Database connections");
+    await testConnection();
     logInfo("Setting up the exit listners");
     process.on(NODE_EXIT_SIGNAL, cleanUpAfterClose);
     logInfo("Starting API server");

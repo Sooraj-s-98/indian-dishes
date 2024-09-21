@@ -3,7 +3,7 @@ const errorLogger = require("../middleware/errorhandler");
 const createRouteManager = require("../routes");
 const { logInfo } = require("../logger");
 
-const { SERVER_PORT } = process.env;
+const { SERVER_PORT = 5001 } = process.env;
 
 /**
  * Register the middlewares used in the API.
