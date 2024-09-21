@@ -2,7 +2,7 @@ const { Router } = require("express");
 
 const statusHandler = require("../handler/status");
 
-const { indianFoodListHandler} = require("../handler/indianFoods")
+const { indianFoodListHandler, findFoodByNameHandler} = require("../handler/indianFoods")
 
 const { logInfo } = require("../logger");
 
@@ -16,6 +16,8 @@ function createRouter() {
   router.get("/status", statusHandler);
 
   router.get("/indian-foods", indianFoodListHandler);
+
+  router.get("/indian-foods/:name", findFoodByNameHandler);
 
   return router;
 }
