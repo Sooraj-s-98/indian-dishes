@@ -3,16 +3,42 @@ const { logError } = require("../logger");
 
 /**
  * Fetch the indian foods live from database.
- * @param {object} request Request for fetch indian foods.
- * @param {number} offset offset of the indian foods.
- * @param {number} perPage offset of the indian foods.
+ * @param {object} req Request for fetch indian foods.
  * @returns {Promise<object>} The user data from database if any.
  */
-async function getIndianFoodList(request, offset, perPage) {
+async function getIndianFoodList(req) {
   try {
+
+  const timeGte = req.query['time[gte]'];
+  const timeLte = req.query['time[lte]'];
+  const originState = req.query['origin[state]'];
+  const diet = req.query.diet;
+
+  let indianFoodDataQuery = 'SELECT * FROM indian_foods WHERE 1=1';
+  let queryParams = [];
+
+  if (timeGte) {
+    indianFoodDataQuery += ' AND cooking_time >= ?';
+    queryParams.push(timeGte);
+  }
+
+  if (timeLte) {
+    indianFoodDataQuery += ' AND cooking_time <= ?';
+    queryParams.push(timeLte);
+  }
+
+  if (originState) {
+    indianFoodDataQuery += ' AND origin_state = ?';
+    queryParams.push(originState);
+  }
+
+  if (diet) {
+    indianFoodDataQuery += ' AND diet = ?';
+    queryParams.push(diet);
+  }
+
    
-    const indianFoodDataQuery = `SELECT * from indian_foods`;
-    const indianFoodList = await query(indianFoodDataQuery)
+    const indianFoodList = await query(indianFoodDataQuery, queryParams)
 
     if (!indianFoodList) return null;
    
