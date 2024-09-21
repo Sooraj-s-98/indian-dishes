@@ -12,7 +12,7 @@ connection.connect((err) => {
 
   // Create table
   const createTableQuery = `
-    CREATE TABLE IF NOT EXISTS indian_food (
+    CREATE TABLE IF NOT EXISTS indian_foods (
       id INT AUTO_INCREMENT,
       name VARCHAR(255),
       ingredients TEXT,
@@ -34,7 +34,7 @@ connection.connect((err) => {
     fs.createReadStream(`${__dirname}/../csv/indian_food.csv`)
       .pipe(csv.parse({ headers: true }))
       .on("data", (row) => {
-        const insertQuery = "INSERT INTO indian_food SET ?";
+        const insertQuery = "INSERT INTO indian_foods SET ?";
         connection.query(insertQuery, row, (err, result) => {
           if (err) throw err;
           console.log(`Row inserted with ID: ${result.insertId}`);
