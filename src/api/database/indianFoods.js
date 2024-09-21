@@ -50,7 +50,31 @@ async function getIndianFoodList(req) {
 }
 
 
+/**
+ * Find food by name from the database.
+ * @param {string} foodName Name of the food to find.
+ * @returns {Promise<object>} The food data from database if any.
+ */
+async function findFoodByName(foodName) {
+    try {
+        if (!foodName) {
+            throw new Error('Food name is required');
+        }
+
+        let foodDataQuery = 'SELECT * FROM indian_foods WHERE name LIKE ?';
+        let queryParams = [`%${foodName}%`];
+
+        const [rows] = await query(foodDataQuery, queryParams);
+        return rows ? rows : 'No matching food found';
+    } catch (error) {
+        console.error('Error finding food by name:', error);
+        throw error; 
+    }
+}
+
+
 
 module.exports = {
   getIndianFoodList,
+  findFoodByName,
 };
