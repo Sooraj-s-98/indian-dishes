@@ -1,7 +1,7 @@
 const { logInfo, logError } = require("../logger");
 const {
   getIndianFoodList,
-  findFoodByName,
+  findFoodById,
   findDishesByIngredients
 } = require("../database/indianFoods");
 
@@ -26,7 +26,7 @@ async function indianFoodListHandler(req, res, next) {
 }
 
 /**
- * Handler to find and return food data by name.
+ * Handler to find and return food data by id.
  * Responds with 404 if not found, or 500 on server error.
  *
  * @param {Request} req Request object, with food name in params.
@@ -34,16 +34,17 @@ async function indianFoodListHandler(req, res, next) {
  * @param {NextFunction} next Next middleware function.
  * @returns {Promise<Response<any, Record<string, any>> | void>} Response status.
  */
-async function findFoodByNameHandler(req, res, next) {
+async function findFoodByIdHandler(req, res, next) {
   try {
-    const foodName = decodeURIComponent(req.params.name);
-    const result = await findFoodByName(foodName);
+    logInfo("Handler to find and return food data by id");
+    const result = await findFoodById(req.params.id);
     if (result === "No matching food found") {
       return res.status(404).send(result);
     }
     res.json(result);
   } catch (error) {
-    res.status(500).send("Server error occurred while finding food by name.");
+    logError("Error in function::findFoodByIdHandler", error);
+    res.status(500).send("Server error occurred while finding food by id.");
   }
 }
 
@@ -60,6 +61,7 @@ async function findFoodByNameHandler(req, res, next) {
  */
 async function findDishesByIngredientsHandler(req, res, next) {
     try {
+      logInfo("Handles the request to find dishes based on the provided ingredients");
       const userIngredients = req.body.ingredients;
   
       if (!userIngredients || !Array.isArray(userIngredients) || userIngredients.length === 0) {
@@ -70,13 +72,14 @@ async function findDishesByIngredientsHandler(req, res, next) {
   
       res.json(possibleDishes);
     } catch (error) {
-      console.error(error); // Log the error for debugging purposes
-      next(error); // Pass the error to the next middleware (e.g., custom error handler)
+      logError("Error in function::findDishesByIngredientsHandler", error);
+      console.error(error); 
+      next(error); 
     }
   }
 
 module.exports = {
   indianFoodListHandler,
-  findFoodByNameHandler,
+  findFoodByIdHandler,
   findDishesByIngredientsHandler,
 };

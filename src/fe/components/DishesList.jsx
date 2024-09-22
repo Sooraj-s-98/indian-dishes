@@ -73,8 +73,8 @@ const DishesList = ({ dishes }) => {
               </td>
               <td>{JSON.parse(dish.ingredients).join(", ")} </td>
               <td>{dish.diet}</td>
-              <td>{dish.prep_time} mins</td>
-              <td>{dish.cook_time} mins</td>
+              <td>{dish.prep_time ? `${dish.prep_time} mins` : ''} </td>
+              <td>{dish.cook_time ? `${dish.cook_time} mins` : ''} </td>
               <td>{dish.flavor_profile}</td>
               <td>{dish.course}</td>
               <td>{dish.state}</td>

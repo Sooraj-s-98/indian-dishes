@@ -48,23 +48,22 @@ async function getIndianFoodList(req) {
 }
 
 /**
- * Find food by name from the database.
- * @param {string} foodName Name of the food to find.
+ * Find food by Id from the database.
+ * @param {Number} id Name of the food to find.
  * @returns {Promise<object>} The food data from database if any.
  */
-async function findFoodByName(foodName) {
+async function findFoodById(id) {
   try {
-    if (!foodName) {
-      throw new Error("Food name is required");
+    if (!id) {
+      throw new Error("Food id is required");
     }
 
-    let foodDataQuery = "SELECT * FROM indian_foods WHERE name LIKE ?";
-    let queryParams = [`%${foodName}%`];
+    let foodDataQuery = "SELECT * FROM indian_foods WHERE id = ?";
 
-    const [rows] = await query(foodDataQuery, queryParams);
+    const [rows] = await query(foodDataQuery, [id]);
     return rows ? rows : "No matching food found";
   } catch (error) {
-    console.error("Error in function::findFoodByName:", error);
+    logError("Error in function::findFoodById:", error);
     throw error;
   }
 }
@@ -91,13 +90,13 @@ async function findDishesByIngredients(userIngredients) {
 
     return dishNames;
   } catch (error) {
-    console.error("Error in function::findDishesByIngredients:", error);
+    logError("Error in function::findDishesByIngredients:", error);
     throw error;
   }
 }
 
 module.exports = {
   getIndianFoodList,
-  findFoodByName,
+  findFoodById,
   findDishesByIngredients,
 };
