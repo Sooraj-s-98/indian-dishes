@@ -15,7 +15,7 @@ connection.connect((err) => {
     CREATE TABLE IF NOT EXISTS indian_foods (
       id INT AUTO_INCREMENT,
       name VARCHAR(255),
-      ingredients TEXT,
+      ingredients JSON,
       diet VARCHAR(255) DEFAULT NULL,
       prep_time INT,
       cook_time INT,
@@ -34,6 +34,11 @@ connection.connect((err) => {
     fs.createReadStream(`${__dirname}/../csv/indian_food.csv`)
       .pipe(csv.parse({ headers: true }))
       .on("data", (row) => {
+        if (row.ingredients) {
+          row.ingredients = JSON.stringify(
+            row.ingredients.split(",").map((ingredient) => ingredient.trim())
+          );
+        }
         const insertQuery = "INSERT INTO indian_foods SET ?";
         connection.query(insertQuery, row, (err, result) => {
           if (err) throw err;
@@ -42,7 +47,7 @@ connection.connect((err) => {
       })
       .on("end", () => {
         console.log("CSV file successfully processed and data inserted.");
-        connection.end(); 
+        connection.end();
       });
   });
 });
