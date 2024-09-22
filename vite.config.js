@@ -1,6 +1,6 @@
 import { defineConfig } from "vite";
-import react from '@vitejs/plugin-react';
-import path from 'path';
+import react from "@vitejs/plugin-react";
+import path from "path";
 
 export default defineConfig(({ mode }) => {
   const config = {
@@ -12,7 +12,11 @@ export default defineConfig(({ mode }) => {
     },
     resolve: {
       alias: {
+        "@pages": path.resolve(__dirname, "./src/fe/pages"),
+        "@ui": path.resolve(__dirname, "./src/fe/components/ui"),
+        "@components": path.resolve(__dirname, "./src/fe/components"),
         "@": path.resolve(__dirname, "./src/fe"),
+
       },
     },
   };
@@ -23,6 +27,6 @@ export default defineConfig(({ mode }) => {
       include: ["./src/fe/**/*.*"],
     };
   }
-console.log('config', config)
+  console.log("config", config);
   return config;
 });

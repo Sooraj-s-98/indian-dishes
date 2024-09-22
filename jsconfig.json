@@ -23,7 +23,10 @@
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/fe/*"]
+      "@/*": ["./src/fe/*"],
+      "@components/*": ["./src/fe/components/*"],
+      "@ui/*": ["./src/fe/components/ui/*"],
+      "@pages/*": ["./src/fe/pages/*"],
     },
     /**
      * Typecheck JS in `.jsx` and `.js` files by default.
