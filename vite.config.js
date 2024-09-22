@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
         "@ui": path.resolve(__dirname, "./src/fe/components/ui"),
         "@components": path.resolve(__dirname, "./src/fe/components"),
         "@": path.resolve(__dirname, "./src/fe"),
-
+        "@hooks": path.resolve(__dirname, "./src/fe/hooks"),
       },
     },
   };

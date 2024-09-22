@@ -27,6 +27,7 @@
       "@components/*": ["./src/fe/components/*"],
       "@ui/*": ["./src/fe/components/ui/*"],
       "@pages/*": ["./src/fe/pages/*"],
+      "@hooks/*": ["./src/fe/hooks/*"],
     },
     /**
      * Typecheck JS in `.jsx` and `.js` files by default.
