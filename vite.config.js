@@ -1,37 +1,28 @@
-// import { defineConfig } from 'vite'
-// import react from '@vitejs/plugin-react'
-
-// // https://vitejs.dev/config/
-// export default defineConfig({
-//   plugins: [react()],
-// })
-
 import { defineConfig } from "vite";
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig(({ mode }) => {
+  const config = {
+    plugins: [react()],
+    root: "src/fe",
+    build: {
+      outDir: "../../public",
+      emptyOutDir: true,
+    },
+    resolve: {
+      alias: {
+        "@": path.resolve(__dirname, "./src/fe"),
+      },
+    },
+  };
+
   if (mode === "development") {
-    return {
-      plugins: [react()],
-      root: "src/fe",
-      build: {
-        sourcemap: true,
-        outDir: "../../public",
-        watch: {
-          include: ["./src/fe/**/*.*"],
-        },
-        emptyOutDir: true,
-      },
-    };
-  } else {
-    return {
-      plugins: [react()],
-      root: "src/fe",
-      build: {
-        outDir: "../../public",
-        emptyOutDir: true,
-      },
+    config.build.sourcemap = true;
+    config.build.watch = {
+      include: ["./src/fe/**/*.*"],
     };
   }
+console.log('config', config)
+  return config;
 });
-

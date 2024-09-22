@@ -22,6 +22,9 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/fe/*"]
+    },
     /**
      * Typecheck JS in `.jsx` and `.js` files by default.
      * Disable this if you'd like to use dynamic types.
