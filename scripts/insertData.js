@@ -34,6 +34,13 @@ connection.connect((err) => {
     fs.createReadStream(`${__dirname}/../csv/indian_food.csv`)
       .pipe(csv.parse({ headers: true }))
       .on("data", (row) => {
+
+        Object.keys(row).forEach(key => {
+          if (row[key] === '-1') {
+            row[key] = null; 
+          }
+        });
+
         if (row.ingredients) {
           row.ingredients = JSON.stringify(
             row.ingredients.split(",").map((ingredient) => ingredient.trim())
