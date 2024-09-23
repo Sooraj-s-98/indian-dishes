@@ -43,7 +43,7 @@ connection.connect((err) => {
 
         if (row.ingredients) {
           row.ingredients = JSON.stringify(
-            row.ingredients.split(",").map((ingredient) => ingredient.trim())
+            row.ingredients.split(",").map((ingredient) => ingredient.trim().toLowerCase())
           );
         }
         const insertQuery = "INSERT INTO indian_foods SET ?";

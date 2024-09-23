@@ -12,6 +12,8 @@ dist
 dist-ssr
 *.local
 scripts/config.json
+public/*
+!public/
 
 # Editor directories and files
 .vscode/*
