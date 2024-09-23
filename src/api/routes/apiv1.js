@@ -7,6 +7,7 @@ const {
   findFoodByIdHandler,
   findDishesByIngredientsHandler,
   ingredientListHandler,
+  searchHandler,
 } = require("../handler/indianFoods");
 
 const { logInfo } = require("../logger");
@@ -27,6 +28,8 @@ function createRouter() {
   router.post("/dishes", findDishesByIngredientsHandler);
 
   router.get("/ingredients",  ingredientListHandler);
+
+  router.get("/search", searchHandler)
 
   return router;
 }
