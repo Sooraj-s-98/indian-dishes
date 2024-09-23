@@ -2,7 +2,8 @@ const { logInfo, logError } = require("../logger");
 const {
   getIndianFoodList,
   findFoodById,
-  findDishesByIngredients
+  findDishesByIngredients,
+  getIngredientList,
 } = require("../database/indianFoods");
 
 /**
@@ -60,26 +61,55 @@ async function findFoodByIdHandler(req, res, next) {
  * @returns {Promise<Response<any, Record<string, any>> | void>} - A promise that resolves to a response object or void.
  */
 async function findDishesByIngredientsHandler(req, res, next) {
-    try {
-      logInfo("Handles the request to find dishes based on the provided ingredients");
-      const userIngredients = req.body.ingredients;
-  
-      if (!userIngredients || !Array.isArray(userIngredients) || userIngredients.length === 0) {
-        return res.status(400).send("Invalid input: 'ingredients' must be a non-empty array.");
-      }
-  
-      const possibleDishes = await findDishesByIngredients(userIngredients);
-  
-      res.json(possibleDishes);
-    } catch (error) {
-      logError("Error in function::findDishesByIngredientsHandler", error);
-      console.error(error); 
-      next(error); 
+  try {
+    logInfo(
+      "Handles the request to find dishes based on the provided ingredients"
+    );
+    const userIngredients = req.body.ingredients;
+
+    if (
+      !userIngredients ||
+      !Array.isArray(userIngredients) ||
+      userIngredients.length === 0
+    ) {
+      return res
+        .status(400)
+        .send("Invalid input: 'ingredients' must be a non-empty array.");
     }
+
+    const possibleDishes = await findDishesByIngredients(userIngredients);
+
+    res.json(possibleDishes);
+  } catch (error) {
+    logError("Error in function::findDishesByIngredientsHandler", error);
+    console.error(error);
+    next(error);
   }
+}
+
+/**
+ * Creates a handler for a get all ingredients.
+ * @param {Request} req The express request object.
+ * @param {Response} res The express response object.
+ * @param {NextFunction} next The express next function.
+ * @returns {Promise<Response<any, Record<string, any>> | void>} Responds with status.
+ */
+async function ingredientListHandler(req, res, next) {
+  try {
+    logInfo("Handling data request for ingredients list");
+
+    const ingredientList = await getIngredientList(req);
+
+    return res.status(200).send(ingredientList);
+  } catch (error) {
+    logError("Error in function::ingredientListHandler", error);
+    next(error);
+  }
+}
 
 module.exports = {
   indianFoodListHandler,
   findFoodByIdHandler,
   findDishesByIngredientsHandler,
+  ingredientListHandler,
 };

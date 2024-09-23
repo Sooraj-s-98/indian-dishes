@@ -95,8 +95,36 @@ async function findDishesByIngredients(userIngredients) {
   }
 }
 
+/**
+ * Fetches distinct ingredients from the 'indian_foods' table.
+ * @returns {Promise<object>} - A promise that resolves to the list of ingredients.
+ */
+async function getIngredientList() {
+  try {
+    let ingredientDataQuery = `
+SELECT DISTINCT TRIM(BOTH '"' FROM JSON_UNQUOTE(JSON_EXTRACT(ingredients, CONCAT('$[', n, ']')))) AS ingredient
+FROM indian_foods
+CROSS JOIN (
+    SELECT 0 AS n UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7 UNION ALL SELECT 8 UNION ALL SELECT 9 UNION ALL SELECT 10 UNION ALL SELECT 11 UNION ALL SELECT 12 UNION ALL SELECT 13 UNION ALL SELECT 14 UNION ALL SELECT 15
+) numbers
+WHERE JSON_UNQUOTE(JSON_EXTRACT(ingredients, CONCAT('$[', n, ']'))) IS NOT NULL AND JSON_UNQUOTE(JSON_EXTRACT(ingredients, CONCAT('$[', n, ']'))) != '';
+
+`;
+
+    const ingredientListResponse = await query(ingredientDataQuery);
+
+    if (!ingredientListResponse) return null;
+
+    return ingredientListResponse;
+  } catch (error) {
+    logError("Error in function::getIngredientList", error);
+    return Promise.reject(error);
+  }
+}
+
 module.exports = {
   getIndianFoodList,
   findFoodById,
   findDishesByIngredients,
+  getIngredientList,
 };
