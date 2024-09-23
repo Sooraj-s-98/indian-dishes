@@ -2,7 +2,12 @@ const { Router } = require("express");
 
 const statusHandler = require("../handler/status");
 
-const { indianFoodListHandler, findFoodByIdHandler , findDishesByIngredientsHandler} = require("../handler/indianFoods")
+const {
+  indianFoodListHandler,
+  findFoodByIdHandler,
+  findDishesByIngredientsHandler,
+  ingredientListHandler,
+} = require("../handler/indianFoods");
 
 const { logInfo } = require("../logger");
 
@@ -19,7 +24,9 @@ function createRouter() {
 
   router.get("/indian-foods/:id", findFoodByIdHandler);
 
-  router.post('/dishes', findDishesByIngredientsHandler)
+  router.post("/dishes", findDishesByIngredientsHandler);
+
+  router.get("/ingredients",  ingredientListHandler);
 
   return router;
 }
