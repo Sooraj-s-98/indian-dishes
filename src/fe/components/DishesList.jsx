@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Table } from "@ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Link } from "react-router-dom";
 import {
   Pagination,
@@ -18,9 +25,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
+import SortPopover from "./SortPopover";
 
 const DishesList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -30,15 +37,21 @@ const DishesList = () => {
 
   const currentPageData = parseInt(searchParams.get("page")) || 1;
   const rowsPerPageData = parseInt(searchParams.get("per_page")) || 50;
+  const sortData = searchParams.get("sort").split(".");
 
   const [currentPage, setCurrentPage] = useState(currentPageData);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageData);
+  const [sortState, setSortState] = useState({
+    column: sortData[0] || "name",
+    direction: sortData[1] || "desc",
+  });
+
   const [rowCount, setRowCount] = useState(rowsPerPageData.toString());
 
   const fetchData = async () => {
     const url = `/api/v1/indian-foods?page=${searchParams.get(
       "page"
-    )}&per_page=${searchParams.get("per_page")}`;
+    )}&per_page=${searchParams.get("per_page")}&sort=${searchParams.get("sort")}`;
 
     try {
       const { data } = await axios.get(url);
@@ -127,6 +140,15 @@ const DishesList = () => {
     return pages;
   };
 
+  const handleSort = (column, direction) => {
+    setSearchParams({
+      page: currentPage.toString(),
+      per_page: rowsPerPage.toString(),
+      sort: `${column}.${direction}`,
+    });
+    setSortState({ column, direction });
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4">Dish List</h2>
@@ -151,36 +173,55 @@ const DishesList = () => {
 
       {/* Dishes Table */}
       <Table>
-        <thead>
-          <tr>
-            <th>Dish Name</th>
-            <th>Ingredients</th>
-            <th>Diet</th>
-            <th>Prep Time</th>
-            <th>Cooking Time</th>
-            <th>Flavor</th>
-            <th>Course</th>
-            <th>State</th>
-            <th>Region</th>
-          </tr>
-        </thead>
-        <tbody>
+        <TableHeader className="w-[100px]">
+          <TableRow>
+            <TableHead>
+              <div className="flex items-center justify-between">
+                <span> Dish Name</span>
+                <SortPopover column="name" handleSort={handleSort} />
+              </div>
+            </TableHead>
+            <TableHead>Ingredients</TableHead>
+            <TableHead>Diet</TableHead>
+            <TableHead>
+              <div className="flex items-center justify-between">
+                <span> Prep Time</span>
+                <SortPopover column="prep_time" handleSort={handleSort} />
+              </div>
+            </TableHead>
+            <TableHead>
+              <div className="flex items-center justify-between">
+                <span> Cooking Time</span>
+                <SortPopover column="cook_time" handleSort={handleSort} />
+              </div>
+            </TableHead>
+            <TableHead>Flavor</TableHead>
+            <TableHead>Course</TableHead>
+            <TableHead>State</TableHead>
+            <TableHead>Region</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {dishes.map((dish) => (
-            <tr key={dish.id}>
-              <td>
+            <TableRow key={dish.id}>
+              <TableCell>
                 <Link to={`/dish/${dish.id}`}>{dish.name}</Link>
-              </td>
-              <td>{JSON.parse(dish.ingredients).join(", ")} </td>
-              <td>{dish.diet}</td>
-              <td>{dish.prep_time ? `${dish.prep_time} mins` : ""} </td>
-              <td>{dish.cook_time ? `${dish.cook_time} mins` : ""} </td>
-              <td>{dish.flavor_profile}</td>
-              <td>{dish.course}</td>
-              <td>{dish.state}</td>
-              <td>{dish.region}</td>
-            </tr>
+              </TableCell>
+              <TableCell>{JSON.parse(dish.ingredients).join(", ")} </TableCell>
+              <TableCell>{dish.diet}</TableCell>
+              <TableCell>
+                {dish.prep_time ? `${dish.prep_time} mins` : ""}{" "}
+              </TableCell>
+              <TableCell>
+                {dish.cook_time ? `${dish.cook_time} mins` : ""}{" "}
+              </TableCell>
+              <TableCell>{dish.flavor_profile}</TableCell>
+              <TableCell>{dish.course}</TableCell>
+              <TableCell>{dish.state}</TableCell>
+              <TableCell>{dish.region}</TableCell>
+            </TableRow>
           ))}
-        </tbody>
+        </TableBody>
       </Table>
 
       <Pagination>

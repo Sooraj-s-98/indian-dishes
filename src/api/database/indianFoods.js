@@ -13,6 +13,17 @@ async function getIndianFoodList(req,  offset, perPage) {
     const originState = req.query["origin[state]"];
     const diet = req.query.diet;
 
+  const sortParam = req.query.sort;
+
+  const sortMappings = {
+    'name.asc': 'name ASC',
+    'name.desc': 'name DESC',
+    'cooking_time.asc': 'cooking_time ASC',
+    'cooking_time.desc': 'cooking_time DESC',
+    'prep_time.asc': 'prep_time ASC',
+    'prep_time.desc': 'prep_time DESC',
+  };
+
     let indianFoodDataQuery = "SELECT * ,  count(*) OVER() AS full_count FROM indian_foods WHERE 1=1";
     let queryParams = [];
 
@@ -34,6 +45,10 @@ async function getIndianFoodList(req,  offset, perPage) {
     if (diet) {
       indianFoodDataQuery += " AND diet = ?";
       queryParams.push(diet);
+    }
+
+    if (sortParam && sortMappings[sortParam]) {
+      indianFoodDataQuery+= ` ORDER BY ${sortMappings[sortParam]}`;
     }
 
     const indianFoodList = await query(`${indianFoodDataQuery} LIMIT ${perPage} OFFSET ${offset}`, queryParams);
