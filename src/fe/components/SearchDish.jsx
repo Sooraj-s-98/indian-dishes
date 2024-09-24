@@ -37,7 +37,6 @@ const SearchDish = () => {
         region: dish.region,
       }));
       setOptions(formattedOptions);
-      console.log("options", formattedOptions);
     } catch (err) {
       setError("Failed to load results");
     } finally {

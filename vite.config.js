@@ -27,6 +27,5 @@ export default defineConfig(({ mode }) => {
       include: ["./src/fe/**/*.*"],
     };
   }
-  console.log("config", config);
   return config;
 });
