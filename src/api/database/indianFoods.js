@@ -58,8 +58,6 @@ async function getIndianFoodList(req, offset, perPage) {
       indianFoodDataQuery += ` ORDER BY ${sortMappings[sortParam]}`;
     }
 
-    console.log('indianFoodDataQuery', indianFoodDataQuery)
-
     const indianFoodList = await query(
       `${indianFoodDataQuery} LIMIT ${perPage} OFFSET ${offset}`,
       queryParams
