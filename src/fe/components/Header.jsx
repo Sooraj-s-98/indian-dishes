@@ -1,44 +1,86 @@
-import React from "react";
-import { Button } from "@components/ui/button";
-import SearchDish from "./SearchDish"
-
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import SearchDish from "./SearchDish";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import { Menu, X } from "lucide-react";
 
 export default function Header() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const menuItems = [
+    { name: "Home", path: "/" },
+    { name: "Dish Suggester", path: "/dishes/suggester" },
+  ];
+
   return (
-    <nav className="fixed inset-x-0 top-0 z-50 bg-white shadow-sm dark:bg-gray-950/90">
-      <div className="w-full max-w-7xl mx-auto px-4">
-        <div className="flex justify-between h-14 items-center">
-          <Link to="/" className="flex items-center">
+    <header className="sticky top-0 z-50 w-full border-b bg-white">
+      <div className="container flex h-14 items-center">
+        <div className="mr-4 hidden md:flex">
+          <Link to="/" className="mr-6 flex items-center space-x-2">
             <MountainIcon className="h-6 w-6" />
-            <span className="sr-only">sooraj</span>
+            <span className="hidden font-bold sm:inline-block">Sooraj</span>
           </Link>
-          <div className="flex items-center gap-4">
+          <nav className="flex items-center space-x-6 text-sm font-medium">
+            {menuItems.map((item) => (
+              <Link
+                key={item.name}
+                to={item.path}
+                className="transition-colors hover:text-foreground/80 text-foreground/60"
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+        <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
+          <div className="w-full flex-1 md:w-auto md:flex-none">
             <SearchDish />
           </div>
-          <nav className="hidden md:flex gap-4">
-            <Link
-              to="/"
-              className="font-medium flex items-center text-sm transition-colors hover:underline"
-            >
-              Home
-            </Link>
-            <Link
-              to="/dishes/suggester"
-              className="font-medium flex items-center text-sm transition-colors hover:underline"
-            >
-              Dish Suggester
-            </Link>
-          </nav>
-          <div className="flex items-center gap-4">
-            <Button variant="outline" size="sm">
+          <nav className="flex items-center">
+            <Button variant="ghost" size="sm" className="mr-2 hidden md:flex">
               Sign in
             </Button>
-            <Button size="sm">Sign up</Button>
-          </div>
+            <Button size="sm" className="hidden md:flex">Sign up</Button>
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="px-0 text-base hover:bg-transparent focus-visible:bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 md:hidden"
+                >
+                  <Menu className="h-5 w-5" />
+                  <span className="sr-only">Toggle Menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="bg-white text-black pr-0">
+              <SheetTitle>Navigation Menu</SheetTitle>
+                
+                <MobileNav items={menuItems} />
+              </SheetContent>
+            </Sheet>
+          </nav>
         </div>
       </div>
-    </nav>
+    </header>
+  );
+}
+
+function MobileNav({ items }) {
+  return (
+    <div className="flex flex-col space-y-3 text-foreground">
+      {items.map((item) => (
+        <Link
+          key={item.name}
+          to={item.path}
+          className="text-foreground/60 transition-colors hover:text-foreground"
+        >
+          {item.name}
+        </Link>
+      ))}
+      <Button variant="outline" className="justify-start">Sign in</Button>
+      <Button className="justify-start">Sign up</Button>
+    </div>
   );
 }
 
