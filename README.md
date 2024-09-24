@@ -58,19 +58,6 @@ npm run dev
 
 
 
-https://github.com/user-attachments/assets/451b498d-25e9-4e98-a5e3-d58640aa80d8
-
-
-
-
-https://github.com/user-attachments/assets/feed8f62-b981-465f-8ad7-e3e51c33690f
-
-
-
-
-
-https://github.com/user-attachments/assets/0cea7b17-6351-43bf-8ee5-2015409174f1
-
 
 
 
