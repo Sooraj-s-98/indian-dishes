@@ -137,11 +137,8 @@ async function search(searchTerm) {
     WHERE name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}'
   `;
 
-
-
     const rows = await query(searchQuery);
      
-    console.log("rows", rows);
     return rows;
   } catch (error) {
     logError("Error in function::search:", error);

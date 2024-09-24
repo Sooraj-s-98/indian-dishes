@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Home from "@pages/Home";
 import DishDetails from '@pages/DishDetails';
 import DishSuggester from "@pages/DishSuggester";
+import Header from "@components/header"
 
 import "./index.css";
 
@@ -11,6 +12,7 @@ function App() {
   return (
     <Router>
       <div>
+        <Header />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dish/:dishId" element={<DishDetails />} /> 
