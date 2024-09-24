@@ -4,6 +4,7 @@ const {
   findFoodById,
   findDishesByIngredients,
   getIngredientList,
+  search
 } = require("../database/indianFoods");
 
 /**
@@ -107,9 +108,37 @@ async function ingredientListHandler(req, res, next) {
   }
 }
 
+
+/**
+ * Creates a handler for search request in indian food.
+ * @param {Request} req The express request object.
+ * @param {Response} res The express response object.
+ * @param {NextFunction} next The express next function.
+ * @returns {Promise<Response<any, Record<string, any>> | void>} Responds with status.
+ */
+async function searchHandler(req, res, next) {
+  try {
+    logInfo("Handling search request in indian foods");
+
+    const searchTerm = req.query.q;
+
+  if (!searchTerm) {
+    return res.status(400).json({ message: "Search term is required" });
+  }
+
+    const dishes = await search(searchTerm);
+
+    return res.status(200).send(dishes);
+  } catch (error) {
+    logError("Error in function::searchHandler", error);
+    next(error);
+  }
+}
+
 module.exports = {
   indianFoodListHandler,
   findFoodByIdHandler,
   findDishesByIngredientsHandler,
   ingredientListHandler,
+  searchHandler
 };

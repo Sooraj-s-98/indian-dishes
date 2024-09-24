@@ -122,9 +122,34 @@ WHERE JSON_UNQUOTE(JSON_EXTRACT(ingredients, CONCAT('$[', n, ']'))) IS NOT NULL 
   }
 }
 
+/**
+ * search.
+ * @param {string} searchTerm Search request for fetch indian foods.
+ * @returns {Promise<object>} The food data from database if any.
+ */
+async function search(searchTerm) {
+  try {
+    const likeTerm = `%${searchTerm}%`;
+    
+    const searchQuery = `
+    SELECT id, name, ingredients, state, region
+    FROM indian_foods
+    WHERE name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}'
+  `;
+
+    const rows = await query(searchQuery);
+     
+    return rows;
+  } catch (error) {
+    logError("Error in function::search:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   getIndianFoodList,
   findFoodById,
   findDishesByIngredients,
   getIngredientList,
+  search,
 };
