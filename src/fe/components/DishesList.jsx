@@ -72,7 +72,7 @@ const DishesList = () => {
   };
 
   useEffect(() => {
-    if (!searchParams.get("page") || !searchParams.get("per_page") || !searchParams.get("sort")) {
+    if (!searchParams.get("page") || !searchParams.get("per_page") || !searchParams.get("sort") || !searchParams.get("q")) {
       setSearchParams({
         page: currentPage.toString(),
         per_page: rowsPerPage.toString(),

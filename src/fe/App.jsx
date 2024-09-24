@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Home from "@pages/Home";
 import DishDetails from '@pages/DishDetails';
 import DishSuggester from "@pages/DishSuggester";
-import Header from "@components/header"
+import Header from "@components/Header"
 
 import "./index.css";
 
