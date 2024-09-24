@@ -54,3 +54,13 @@ To run the application in development mode, use the following command:
 ```bash
 npm run dev
 ```
+
+
+
+
+https://github.com/user-attachments/assets/451b498d-25e9-4e98-a5e3-d58640aa80d8
+
+
+
+
+
