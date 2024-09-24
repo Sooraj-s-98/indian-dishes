@@ -6,25 +6,28 @@ const { logError } = require("../logger");
  * @param {object} req Request for fetch indian foods.
  * @returns {Promise<object>} The user data from database if any.
  */
-async function getIndianFoodList(req,  offset, perPage) {
+async function getIndianFoodList(req, offset, perPage) {
   try {
     const timeGte = req.query["time[gte]"];
     const timeLte = req.query["time[lte]"];
     const originState = req.query["origin[state]"];
     const diet = req.query.diet;
+    const searchTerm = req.query.q;
+    const likeTerm = `%${searchTerm}%`;
 
-  const sortParam = req.query.sort;
+    const sortParam = req.query.sort;
 
-  const sortMappings = {
-    'name.asc': 'name ASC',
-    'name.desc': 'name DESC',
-    'cooking_time.asc': 'cooking_time ASC',
-    'cooking_time.desc': 'cooking_time DESC',
-    'prep_time.asc': 'prep_time ASC',
-    'prep_time.desc': 'prep_time DESC',
-  };
+    const sortMappings = {
+      "name.asc": "name ASC",
+      "name.desc": "name DESC",
+      "cooking_time.asc": "cooking_time ASC",
+      "cooking_time.desc": "cooking_time DESC",
+      "prep_time.asc": "prep_time ASC",
+      "prep_time.desc": "prep_time DESC",
+    };
 
-    let indianFoodDataQuery = "SELECT * ,  count(*) OVER() AS full_count FROM indian_foods WHERE 1=1";
+    let indianFoodDataQuery =
+      "SELECT * ,  count(*) OVER() AS full_count FROM indian_foods WHERE 1=1 ";
     let queryParams = [];
 
     if (timeGte) {
@@ -47,11 +50,20 @@ async function getIndianFoodList(req,  offset, perPage) {
       queryParams.push(diet);
     }
 
-    if (sortParam && sortMappings[sortParam]) {
-      indianFoodDataQuery+= ` ORDER BY ${sortMappings[sortParam]}`;
+    if (searchTerm) {
+      indianFoodDataQuery += ` AND ( name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}' OR ingredients LIKE '${likeTerm}' OR diet LIKE '${likeTerm}' )`;
     }
 
-    const indianFoodList = await query(`${indianFoodDataQuery} LIMIT ${perPage} OFFSET ${offset}`, queryParams);
+    if (sortParam && sortMappings[sortParam]) {
+      indianFoodDataQuery += ` ORDER BY ${sortMappings[sortParam]}`;
+    }
+
+    console.log('indianFoodDataQuery', indianFoodDataQuery)
+
+    const indianFoodList = await query(
+      `${indianFoodDataQuery} LIMIT ${perPage} OFFSET ${offset}`,
+      queryParams
+    );
 
     if (!indianFoodList) return null;
 

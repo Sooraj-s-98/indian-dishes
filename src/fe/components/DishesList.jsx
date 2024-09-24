@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {  SearchIcon } from "lucide-react"
 import axios from "axios";
 import { useSearchParams } from "react-router-dom";
 import SortPopover from "./SortPopover";
@@ -38,6 +40,7 @@ const DishesList = () => {
   const currentPageData = parseInt(searchParams.get("page")) || 1;
   const rowsPerPageData = parseInt(searchParams.get("per_page")) || 50;
   const sortData = searchParams.get("sort")?.split(".") || [];
+  const searchTermData = searchParams.get("q") || "";
 
   const [currentPage, setCurrentPage] = useState(currentPageData);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageData);
@@ -47,11 +50,12 @@ const DishesList = () => {
   });
 
   const [rowCount, setRowCount] = useState(rowsPerPageData.toString());
+  const [searchTerm, setSearchTerm] = useState(searchTermData);
 
   const fetchData = async () => {
     const url = `/api/v1/indian-foods?page=${searchParams.get(
       "page"
-    )}&per_page=${searchParams.get("per_page")}&sort=${searchParams.get("sort")}`;
+    )}&per_page=${searchParams.get("per_page")}&sort=${searchParams.get("sort")}&q=${searchParams.get("q")}`;
 
     try {
       const { data } = await axios.get(url);
@@ -68,10 +72,12 @@ const DishesList = () => {
   };
 
   useEffect(() => {
-    if (!searchParams.get("page") || !searchParams.get("per_page")) {
+    if (!searchParams.get("page") || !searchParams.get("per_page") || !searchParams.get("sort")) {
       setSearchParams({
         page: currentPage.toString(),
         per_page: rowsPerPage.toString(),
+        sort: `${sortState.column}.${sortState.direction}`,
+        q : searchTerm
       });
     }
   }, [searchParams]);
@@ -80,8 +86,9 @@ const DishesList = () => {
     fetchData();
   }, [searchParams]);
 
-  const updateSearchParams = (page, perPage = rowsPerPage) => {
-    setSearchParams({ page, per_page: perPage.toString() });
+  const updateSearchParams = (page, perPage = rowsPerPage, sort = sortState, q = searchTerm) => {
+    const sortQuery= `${sort.column}.${sort.direction}`
+    setSearchParams({ page, per_page: perPage.toString() , sort: sortQuery , q: q});
   };
 
   const handleNextPage = () => {
@@ -145,6 +152,7 @@ const DishesList = () => {
       page: currentPage.toString(),
       per_page: rowsPerPage.toString(),
       sort: `${column}.${direction}`,
+      q: searchTerm ?? undefined,
     });
     setSortState({ column, direction });
   };
@@ -154,7 +162,20 @@ const DishesList = () => {
       <h2 className="text-2xl font-bold mb-4">Dish List</h2>
 
       <div className="flex space-x-4 mb-4">
+
         <form onSubmit={handleSubmit} className="flex items-center space-x-2">
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow"
+        />
+        <Button type="submit">
+          <SearchIcon className="h-4 w-4 mr-2" />
+          Search
+        </Button>
+
           <Select value={rowCount} onValueChange={handleRowCountChange}>
             <SelectTrigger className="w-[180px] bg-white">
               <SelectValue placeholder="Select row count" />
