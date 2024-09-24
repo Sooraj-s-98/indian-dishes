@@ -52,7 +52,7 @@ async function getIndianFoodList(req, offset, perPage) {
     }
 
     if (searchTerm) {
-      indianFoodDataQuery += ` AND ( name LIKE ${likeTerm} OR state LIKE ${likeTerm} OR region LIKE ${likeTerm} OR ingredients LIKE ${likeTerm} OR diet LIKE ${likeTerm} )`;
+      indianFoodDataQuery += ` AND ( name LIKE ${likeTerm} OR state LIKE ${likeTerm} OR region LIKE ${likeTerm} OR ingredients LIKE ${likeTerm} OR diet LIKE ${likeTerm} OR flavor_profile LIKE ${likeTerm} OR course LIKE ${likeTerm} )`;
     }
 
     if (sortParam && sortMappings[sortParam]) {
