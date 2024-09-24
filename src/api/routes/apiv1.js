@@ -12,6 +12,12 @@ const {
 
 const { logInfo } = require("../logger");
 
+const validator = require("../middleware/validator");
+
+const {
+  dishIngredientsSchema,
+} = require("../schema");
+
 /**
  * Initializes routes used in app.
  * To add a new route, It must be added here.
@@ -25,7 +31,7 @@ function createRouter() {
 
   router.get("/indian-foods/:id", findFoodByIdHandler);
 
-  router.post("/dishes", findDishesByIngredientsHandler);
+  router.post("/dishes", validator(dishIngredientsSchema), findDishesByIngredientsHandler);
 
   router.get("/ingredients",  ingredientListHandler);
 

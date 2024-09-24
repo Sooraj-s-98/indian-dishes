@@ -1,5 +1,6 @@
 const { query } = require("./index");
 const { logError } = require("../logger");
+const mysql = require('mysql2');
 
 /**
  * Fetch the indian foods live from database.
@@ -13,7 +14,7 @@ async function getIndianFoodList(req, offset, perPage) {
     const originState = req.query["origin[state]"];
     const diet = req.query.diet;
     const searchTerm = req.query.q;
-    const likeTerm = `%${searchTerm}%`;
+    const likeTerm = mysql.escape(`%${searchTerm}%`);
 
     const sortParam = req.query.sort;
 
@@ -51,7 +52,7 @@ async function getIndianFoodList(req, offset, perPage) {
     }
 
     if (searchTerm) {
-      indianFoodDataQuery += ` AND ( name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}' OR ingredients LIKE '${likeTerm}' OR diet LIKE '${likeTerm}' )`;
+      indianFoodDataQuery += ` AND ( name LIKE ${likeTerm} OR state LIKE ${likeTerm} OR region LIKE ${likeTerm} OR ingredients LIKE ${likeTerm} OR diet LIKE ${likeTerm} )`;
     }
 
     if (sortParam && sortMappings[sortParam]) {
@@ -154,12 +155,12 @@ WHERE JSON_UNQUOTE(JSON_EXTRACT(ingredients, CONCAT('$[', n, ']'))) IS NOT NULL 
  */
 async function search(searchTerm) {
   try {
-    const likeTerm = `%${searchTerm}%`;
+    const likeTerm = mysql.escape(`%${searchTerm}%`);
 
     const searchQuery = `
     SELECT id, name, ingredients, state, region
     FROM indian_foods
-    WHERE name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}' OR ingredients LIKE '${likeTerm}'
+    WHERE name LIKE ${likeTerm} OR state LIKE ${likeTerm} OR region LIKE ${likeTerm} OR ingredients LIKE ${likeTerm}
   `;
 
     const rows = await query(searchQuery);

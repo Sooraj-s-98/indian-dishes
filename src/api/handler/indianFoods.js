@@ -54,6 +54,11 @@ async function findFoodByIdHandler(req, res, next) {
   try {
     logInfo("Handler to find and return food data by id");
     const result = await findFoodById(req.params.id);
+    const foodId = parseInt(req.params.id, 10);
+
+    if (isNaN(foodId)) {
+      throw new Error("Invalid ID format. ID must be an integer.");
+    }
     if (result === "No matching food found") {
       return res.status(404).send(result);
     }
@@ -67,8 +72,6 @@ async function findFoodByIdHandler(req, res, next) {
 /**
  * Asynchronously handles the request to find dishes based on the provided ingredients.
  * This function searches for dishes that can be made with the ingredients listed in the request body.
- * It returns a JSON response with the list of possible dishes. If no dishes are found, it responds with a 404 status code.
- * In case of any server-side errors during the process, it responds with a 500 status code indicating an internal server error.
  *
  * @param {Request} req - The request object, expecting a body with a list of ingredients.
  * @param {Response} res - The response object used to send back data or error messages to the client.
@@ -81,16 +84,6 @@ async function findDishesByIngredientsHandler(req, res, next) {
       "Handles the request to find dishes based on the provided ingredients"
     );
     const userIngredients = req.body.ingredients;
-
-    if (
-      !userIngredients ||
-      !Array.isArray(userIngredients) ||
-      userIngredients.length === 0
-    ) {
-      return res
-        .status(400)
-        .send("Invalid input: 'ingredients' must be a non-empty array.");
-    }
 
     const possibleDishes = await findDishesByIngredients(userIngredients);
 
