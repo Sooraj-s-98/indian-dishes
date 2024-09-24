@@ -134,7 +134,7 @@ async function search(searchTerm) {
     const searchQuery = `
     SELECT id, name, ingredients, state, region
     FROM indian_foods
-    WHERE name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}'
+    WHERE name LIKE '${likeTerm}' OR state LIKE '${likeTerm}' OR region LIKE '${likeTerm}' OR ingredients LIKE '${likeTerm}'
   `;
 
     const rows = await query(searchQuery);
