@@ -4,7 +4,7 @@ const {
   findFoodById,
   findDishesByIngredients,
   getIngredientList,
-  search
+  search,
 } = require("../database/indianFoods");
 
 /**
@@ -17,10 +17,24 @@ const {
 async function indianFoodListHandler(req, res, next) {
   try {
     logInfo("Handling data request for indian foods list");
+    const perPage = parseInt(req.query.per_page) || 50;
+    const page = parseInt(req.query.page) || 1;
+    const offset = perPage * page - perPage;
+    const indianFoodList = await getIndianFoodList(req, offset, perPage);
 
-    const indianFoodList = await getIndianFoodList(req);
+    const totalCount = indianFoodList[0] ? indianFoodList[0].full_count : 0;
 
-    return res.status(200).send(indianFoodList);
+    const data = {
+      last_page: Math.ceil(totalCount / perPage),
+      current_page: page,
+      per_page: perPage,
+      from: offset,
+      total: totalCount,
+      list: indianFoodList,
+      to: offset + indianFoodList.length,
+    };
+
+    return res.status(200).send(data);
   } catch (error) {
     logError("Error in function::indianFoodListHandler", error);
     next(error);
@@ -108,7 +122,6 @@ async function ingredientListHandler(req, res, next) {
   }
 }
 
-
 /**
  * Creates a handler for search request in indian food.
  * @param {Request} req The express request object.
@@ -122,9 +135,9 @@ async function searchHandler(req, res, next) {
 
     const searchTerm = req.query.q;
 
-  if (!searchTerm) {
-    return res.status(400).json({ message: "Search term is required" });
-  }
+    if (!searchTerm) {
+      return res.status(400).json({ message: "Search term is required" });
+    }
 
     const dishes = await search(searchTerm);
 
@@ -140,5 +153,5 @@ module.exports = {
   findFoodByIdHandler,
   findDishesByIngredientsHandler,
   ingredientListHandler,
-  searchHandler
+  searchHandler,
 };

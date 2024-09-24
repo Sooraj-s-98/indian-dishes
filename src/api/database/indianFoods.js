@@ -6,14 +6,14 @@ const { logError } = require("../logger");
  * @param {object} req Request for fetch indian foods.
  * @returns {Promise<object>} The user data from database if any.
  */
-async function getIndianFoodList(req) {
+async function getIndianFoodList(req,  offset, perPage) {
   try {
     const timeGte = req.query["time[gte]"];
     const timeLte = req.query["time[lte]"];
     const originState = req.query["origin[state]"];
     const diet = req.query.diet;
 
-    let indianFoodDataQuery = "SELECT * FROM indian_foods WHERE 1=1";
+    let indianFoodDataQuery = "SELECT * ,  count(*) OVER() AS full_count FROM indian_foods WHERE 1=1";
     let queryParams = [];
 
     if (timeGte) {
@@ -36,7 +36,7 @@ async function getIndianFoodList(req) {
       queryParams.push(diet);
     }
 
-    const indianFoodList = await query(indianFoodDataQuery, queryParams);
+    const indianFoodList = await query(`${indianFoodDataQuery} LIMIT ${perPage} OFFSET ${offset}`, queryParams);
 
     if (!indianFoodList) return null;
 
@@ -130,7 +130,7 @@ WHERE JSON_UNQUOTE(JSON_EXTRACT(ingredients, CONCAT('$[', n, ']'))) IS NOT NULL 
 async function search(searchTerm) {
   try {
     const likeTerm = `%${searchTerm}%`;
-    
+
     const searchQuery = `
     SELECT id, name, ingredients, state, region
     FROM indian_foods
@@ -138,7 +138,7 @@ async function search(searchTerm) {
   `;
 
     const rows = await query(searchQuery);
-     
+
     return rows;
   } catch (error) {
     logError("Error in function::search:", error);
