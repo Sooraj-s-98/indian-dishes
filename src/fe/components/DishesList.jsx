@@ -37,7 +37,7 @@ const DishesList = () => {
 
   const currentPageData = parseInt(searchParams.get("page")) || 1;
   const rowsPerPageData = parseInt(searchParams.get("per_page")) || 50;
-  const sortData = searchParams.get("sort").split(".");
+  const sortData = searchParams.get("sort")?.split(".") || [];
 
   const [currentPage, setCurrentPage] = useState(currentPageData);
   const [rowsPerPage, setRowsPerPage] = useState(rowsPerPageData);
